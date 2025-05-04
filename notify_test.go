@@ -99,6 +99,14 @@ func TestNotify_Send(t *testing.T) {
 			}},
 			args{msg: "test case"},
 		},
+		{
+			"test fwaletr notify",
+			fields{config: &Config{
+				Platform: PlatformFwAlert,
+				Token:    os.Getenv("Fw_Token"),
+			}},
+			args{msg: "test case"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

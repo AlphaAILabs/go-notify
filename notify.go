@@ -2,16 +2,18 @@ package notify
 
 import (
 	"errors"
-	"github.com/CoinSummer/go-notify/dingtalk"
-	"github.com/CoinSummer/go-notify/discord"
-	"github.com/CoinSummer/go-notify/email"
-	"github.com/CoinSummer/go-notify/lark"
-	"github.com/CoinSummer/go-notify/pagerduty"
-	"github.com/CoinSummer/go-notify/pushover"
-	"github.com/CoinSummer/go-notify/slack"
-	"github.com/CoinSummer/go-notify/telegram"
+	"github.com/AlphaAILabs/go-notify/fwalert"
 	"strconv"
 	"strings"
+
+	"github.com/AlphaAILabs/go-notify/dingtalk"
+	"github.com/AlphaAILabs/go-notify/discord"
+	"github.com/AlphaAILabs/go-notify/email"
+	"github.com/AlphaAILabs/go-notify/lark"
+	"github.com/AlphaAILabs/go-notify/pagerduty"
+	"github.com/AlphaAILabs/go-notify/pushover"
+	"github.com/AlphaAILabs/go-notify/slack"
+	"github.com/AlphaAILabs/go-notify/telegram"
 )
 
 type Platform string
@@ -25,6 +27,7 @@ const (
 	PlatformDingTalk           = "DingTalk"
 	PlatformEmail              = "Email"
 	PlatformLark               = "Lark"
+	PlatformFwAlert            = "FwAlert"
 )
 
 type Notify struct {
@@ -66,6 +69,8 @@ func (n *Notify) Send(msg string) error {
 		return n.sendEmailNotify(msg)
 	case PlatformLark:
 		return n.sendLarkNotify(msg)
+	case PlatformFwAlert:
+		return n.sendFwAlertNotify(msg)
 	default:
 		return errors.New("not supported notify platform")
 	}
@@ -150,6 +155,14 @@ func (n *Notify) sendEmailNotify(msg string) error {
 
 func (n *Notify) sendLarkNotify(msg string) error {
 	app := lark.New(lark.Options{
+		Token: n.config.Token,
+	})
+	err := app.Send(msg)
+	return err
+}
+
+func (n *Notify) sendFwAlertNotify(msg string) error {
+	app := fwalert.New(fwalert.Options{
 		Token: n.config.Token,
 	})
 	err := app.Send(msg)
